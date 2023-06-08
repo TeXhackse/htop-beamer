@@ -1,0 +1,114 @@
+% rough htop beamer theme draft - marei@peitex.de
+\ProvidesPackage{beamerthemehtop}
+
+
+\let\familydefault\ttdefault
+\raggedright
+
+\colorlet{terminalblue}{cyan}
+
+\let\small\normalsize
+\let\footnotesize\normalsize
+\let\tiny\normalsize
+\let\large\normalsize
+\let\Large\normalsize
+\let\LARGE\normalsize
+\let\huge\normalsize
+\let\Huge\normalsize
+
+\setbeamercolor{footline}{bg=black,fg=white!33}
+\setbeamercolor{normal text}{bg=black,fg=white!33}
+\setbeamercolor{headline-left}{bg=black,fg=green}
+\setbeamercolor{headline-right}{bg=black,fg=green}
+\setbeamercolor{alerted text}{bg=, fg=blue!20!white}
+\setbeamercolor{frametitle}{fg=black,bg=terminalblue}
+\setbeamercolor{toc in head}{fg=black,bg=green}
+
+
+\setbeamerfont{alerted text}{series=\bfseries}
+
+\setbeamertemplate{headline}{%
+	\normalsize
+	\leavevmode\begin{beamercolorbox}[wd=.5\paperwidth]{headline-left}
+	\htopprogressbar
+	\strut Box links
+	\end{beamercolorbox}%
+	\begin{beamercolorbox}[wd=.5\paperwidth]{headline-right}
+	\strut Box rechts \alert{test}
+	\end{beamercolorbox}\par
+%	\smallskip
+%
+	\begin{beamercolorbox}[vmode]{toc in head}
+%	\smallskip
+	\strut sectionsg
+%	\smallskip
+	\end{beamercolorbox}
+	\par\nointerlineskip
+}
+
+\setbeamersize{text margin left=0pt, text margin right=0pt}
+
+
+
+
+
+
+
+\setbeamertemplate{frametitle}{\par\nointerlineskip\begin{beamercolorbox}[vmode]{frametitle}\strut\insertframetitle\strut\end{beamercolorbox}\par\nointerlineskip\vspace*{-\baselineskip}}%vspace ffrom beamerbaseframes
+
+
+\ExplSyntaxOn
+
+\int_new:N \g__ptxcd_total_frames_int
+\int_new:N \l__ptxcd_current_frames_int 
+\NewDocumentCommand{\htopprogressbar}{}{
+	\int_compare:nNnT {\g__ptxcd_total_frames_int} = {0} {\int_gset:Nn \g__ptxcd_total_frames_int \inserttotalframenumber}
+	\int_set:Nn \l__ptxcd_current_frames_int  {\insertframenumber}
+	\color{green}
+	\int_step_inline:nn {\g__ptxcd_total_frames_int } {
+		\int_compare:nNnTF {##1} = \l__ptxcd_current_frames_int  {
+			\color{red}
+		}
+		|
+	}
+	 \int_use:N \l__ptxcd_current_frames_int  
+	 \int_use:N \g__ptxcd_total_frames_int 
+}
+
+
+
+\seq_new:N \g__ptxcd_footer_seq
+
+\NewDocumentCommand{\DefFooter}{m}
+{\seq_gset_from_clist:Nn \g__ptxcd_footer_seq {#1}\tl_gclear:N \g_ptxcd_tl}
+
+\tl_new:N \g_ptxcd_tl
+
+\setbeamertemplate{footline}{%
+%	\leavevmode
+	\begin{beamercolorbox}[sep=0pt,wd=\paperwidth]{footline}
+	\seq_if_empty:NF \g__ptxcd_footer_seq  {
+		\tl_if_empty:NT \g_ptxcd_tl {
+			\seq_gpop_right:NN \g__ptxcd_footer_seq \g_ptxcd_tl
+			\tl_gset_eq:NN 	\g_ptxcd_tl \g_ptxcd_tl 
+		}
+	\seq_map_inline:Nn \g__ptxcd_footer_seq {
+		 \__write_footer_entry:w  ##1 \q_stop
+	}
+	\hfill
+	\exp_last_unbraced:No \__write_footer_entry:w {\g_ptxcd_tl} \q_stop
+	}
+	\end{beamercolorbox}
+	\par\nointerlineskip
+}
+
+\cs_new:Npn  \__write_footer_entry:w  #1 = #2 \q_stop {
+#1\colorbox[rgb]{.66,.66,.66}{\color{black}#2}
+}
+
+\ExplSyntaxOff
+
+
+\DefFooter{Key1=text,Key2=bla}
+
+\endinput
