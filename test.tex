@@ -1,0 +1,27 @@
+\documentclass[aspectratio=169,t]{beamer}
+
+\usetheme{htop}
+\begin{document}
+
+
+\ExplSyntaxOn
+
+\prg_replicate:nn {10} {%Schleife, sonst nicht notwendig
+\begin{frame}{Frametitle}te
+content...
+
+
+\end{frame}
+}
+
+\ExplSyntaxOff
+
+
+\begin{frame}{Frametitle}
+content...
+
+\end{frame}
+
+
+
+\end{document}
